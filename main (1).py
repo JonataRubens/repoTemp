@@ -39,7 +39,7 @@ scaler = StandardScaler()
 data = scaler.fit_transform(data)
 
 Q_max = 3   # Número máximo de clusters
-theta = 1.0 # Limiar de dissimilaridade (ajuste conforme necessário)
+theta = 1.0 # Limiar de dissimilaridade
 
 clusters, centers = bsas(data, Q_max, theta)
 print("\nResultado do Bsas:")
@@ -110,7 +110,7 @@ for i, center in enumerate(kmeans_centers):
 #plt.show()
 
 
-#Método do Cotovelo para o K-means
+#Cotovelo para o K-means
 #inertia = []
 
 #for k in range(1, 10):
@@ -132,7 +132,7 @@ for i, center in enumerate(kmeans_centers):
 ########################### K-means ####################################
 
 
-#Método do Cotovelo para o BSAS
+#Cotovelo para o BSAS
 #def calculate_bsas_dissimilarity(data, Q_max, theta):
 #    dissimilarities = []
 #    for k in range(1, Q_max + 1):
