@@ -4,7 +4,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
-
+from sklearn.datasets import fetch_openml
 
 #distancia euclidiana
 def dissimilarity(a, b):
@@ -31,15 +31,21 @@ def bsas(data, Q_max, theta):
 
     return clusters, centers
 
-#dados IRIS
+#IRIS
 iris = load_iris()
 data = iris.data  
+
+heart_disease = fetch_openml(name='heart-disease', version=1)
+
+#Heart Disease
+#data = heart_disease.data
+#target = heart_disease.target
 
 scaler = StandardScaler()
 data = scaler.fit_transform(data)
 
 Q_max = 3   # Número máximo de clusters
-theta = 1.0 # Limiar de dissimilaridade
+theta = 1.0 # Limiar de dissimilaridade (ajuste conforme necessário)
 
 clusters, centers = bsas(data, Q_max, theta)
 print("\nResultado do Bsas:")
@@ -50,8 +56,6 @@ for i, cluster in enumerate(clusters):
 print("\nCentros dos clusters:")
 for i, center in enumerate(centers):
     print(f"Centro do Cluster {i + 1}: {center}")
-
-
 
 
 #plot
@@ -110,7 +114,7 @@ for i, center in enumerate(kmeans_centers):
 #plt.show()
 
 
-#Cotovelo para o K-means
+#Método do Cotovelo para o K-means
 #inertia = []
 
 #for k in range(1, 10):
@@ -132,7 +136,7 @@ for i, center in enumerate(kmeans_centers):
 ########################### K-means ####################################
 
 
-#Cotovelo para o BSAS
+#Método do Cotovelo para o BSAS
 #def calculate_bsas_dissimilarity(data, Q_max, theta):
 #    dissimilarities = []
 #    for k in range(1, Q_max + 1):
@@ -150,22 +154,4 @@ for i, center in enumerate(kmeans_centers):
 #plt.title('Método do Cotovelo para BSAS')
 #plt.grid(True)
 #plt.show()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
