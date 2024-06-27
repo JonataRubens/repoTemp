@@ -5,6 +5,10 @@ from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 from sklearn.cluster import KMeans
 from sklearn.datasets import fetch_openml
+import time
+from sklearn.metrics import accuracy_score
+from scipy.stats import mode
+
 
 #distancia euclidiana
 def dissimilarity(a, b):
@@ -34,20 +38,27 @@ def bsas(data, Q_max, theta):
 #IRIS
 iris = load_iris()
 data = iris.data  
+labels = iris.target
 
 heart_disease = fetch_openml(name='heart-disease', version=1)
 
 #Heart Disease
+
 #data = heart_disease.data
-#target = heart_disease.target
+target = heart_disease.target
 
 scaler = StandardScaler()
 data = scaler.fit_transform(data)
 
-Q_max = 3   # Número máximo de clusters
-theta = 1.0 # Limiar de dissimilaridade (ajuste conforme necessário)
+Q_max = 3   #Maximo de clusters
+theta = 1.0 # Limiar de dissimilaridade 
 
+#Time
+start_time = time.time()
 clusters, centers = bsas(data, Q_max, theta)
+end_time = time.time()
+bsas_time = end_time - start_time
+
 print("\nResultado do Bsas:")
 print("Número de clusters formados:", len(clusters))
 for i, cluster in enumerate(clusters):
@@ -56,6 +67,23 @@ for i, cluster in enumerate(clusters):
 print("\nCentros dos clusters:")
 for i, center in enumerate(centers):
     print(f"Centro do Cluster {i + 1}: {center}")
+
+# Calcular a taxa de acerto do BSAS
+cluster_labels = np.zeros(data.shape[0])
+for i, cluster in enumerate(clusters):
+    for point in cluster:
+        index = np.where((data == point).all(axis=1))[0][0]
+        cluster_labels[index] = i
+
+# Mapear clusters para rótulos reais
+mapped_labels = np.zeros_like(labels)
+for i in range(Q_max):
+    mask = (cluster_labels == i)
+    mapped_labels[mask] = mode(labels[mask])[0]
+
+bsas_accuracy = accuracy_score(labels, mapped_labels)
+print(f"\nTaxa de acerto do BSAS: {bsas_accuracy * 100:.2f}%")
+print(f"Tempo de processamento do BSAS: {bsas_time:.4f}")
 
 
 #plot
@@ -94,6 +122,15 @@ for i in range(Q_max):
 print("\nCentros dos clusters:")
 for i, center in enumerate(kmeans_centers):
     print(f"Centro do Cluster {i + 1}: {center}")
+
+#taxa de acerto kmeans
+mapped_labels = np.zeros_like(labels)
+for i in range(Q_max):
+    mask = (kmeans_clusters == i)
+    mapped_labels[mask] = mode(labels[mask])[0]
+
+kmeans_accuracy = accuracy_score(labels, mapped_labels)
+print(f"\nTaxa de acerto do K-means: {kmeans_accuracy * 100:.2f}%")
 
 #plot
 
